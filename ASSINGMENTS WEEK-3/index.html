@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JavaScript Assignments</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main>
+    <h1>JavaScript Assignments 1-6</h1>
+    <p class="sub">Choose an assignment and tap Run to see its console output.</p>
+    <label for="pick">Assignment</label>
+    <select id="pick">
+      <option value="assignment1.js">1: Variables, Data Types, Console</option>
+      <option value="assignment2.js">2: Operators and Input Handling</option>
+      <option value="assignment3.js">3: Conditional Logic</option>
+      <option value="assignment4.js">4: Loop Control Structures</option>
+      <option value="assignment5.js">5: Functions and Scope</option>
+      <option value="assignment6.js">6: Arrays, Objects, Methods</option>
+    </select>
+    <button id="runBtn">Run</button>
+    <pre id="output">Output appears here.</pre>
+  </main>
+  <script>
+    document.getElementById("runBtn").addEventListener("click", function () {
+      var out = document.getElementById("output");
+      var lines = [];
+      var original = console.log;
+      console.log = function () {
+        var parts = Array.prototype.map.call(arguments, function (a) {
+          return typeof a === "object" ? JSON.stringify(a) : String(a);
+        });
+        lines.push(parts.join(" "));
+        original.apply(console, arguments);
+      };
+      // Remove any previously loaded assignment script, then load the chosen one
+      var old = document.getElementById("current");
+      if (old) old.remove();
+      var s = document.createElement("script");
+      s.id = "current";
+      s.src = document.getElementById("pick").value + "?t=" + Date.now();
+      s.onload = s.onerror = function () {
+        console.log = original;
+        out.textContent = lines.length ? lines.join("\n") : "No output (file could not be loaded).";
+      };
+      document.body.appendChild(s);
+    });
+  </script>
+</body>
+</html>
